@@ -1,0 +1,265 @@
+{
+    "id":  "ticket_create",
+    "application_id":  "ai_service",
+    "version":  "1.0.0",
+    "api_version":  "1.0.0",
+    "input_schema_version":  "1.0.0",
+    "output_schema_version":  "1.0.0",
+    "name":  "Create E-Ticket",
+    "description":  "Create an E-Ticket for an employee, then notify the selected approver.",
+    "status":  "ACTIVE",
+    "discovery_intents":  [
+                              "create a new E-Ticket",
+                              "submit a ticket request for approval",
+                              "open an E-Ticket for an employee"
+                          ],
+    "input_schema":  {
+                         "$schema":  "https://json-schema.org/draft/2020-12/schema",
+                         "type":  "object",
+                         "additionalProperties":  false,
+                         "required":  [
+                                          "username",
+                                          "menu",
+                                          "title",
+                                          "sub_category",
+                                          "approver",
+                                          "due_date",
+                                          "assign_to"
+                                      ],
+                         "properties":  {
+                                            "username":  {
+                                                             "type":  "string",
+                                                             "minLength":  1,
+                                                             "description":  "E-Ticket employee username supplied explicitly by the caller."
+                                                         },
+                                            "menu":  {
+                                                         "type":  "integer",
+                                                         "minimum":  1,
+                                                         "description":  "Menu ID returned by the E-Ticket menu function."
+                                                     },
+                                            "title":  {
+                                                          "type":  "string",
+                                                          "minLength":  1,
+                                                          "maxLength":  200,
+                                                          "description":  "Ticket title, up to 200 characters."
+                                                      },
+                                            "contact_number":  {
+                                                                   "type":  "string",
+                                                                   "description":  "Optional contact number."
+                                                               },
+                                            "sub_category":  {
+                                                                 "type":  "integer",
+                                                                 "minimum":  1,
+                                                                 "description":  "Subcategory ID returned by ticket_context."
+                                                             },
+                                            "description":  {
+                                                                "type":  "string",
+                                                                "description":  "Optional ticket description."
+                                                            },
+                                            "approver":  {
+                                                             "type":  "string",
+                                                             "minLength":  1,
+                                                             "description":  "Approver username returned by ticket_context."
+                                                         },
+                                            "due_date":  {
+                                                             "type":  "string",
+                                                             "format":  "date",
+                                                             "description":  "Due date in YYYY-MM-DD format."
+                                                         },
+                                            "assign_to":  {
+                                                              "type":  "string",
+                                                              "minLength":  1,
+                                                              "description":  "Operator username returned by ticket_context."
+                                                          }
+                                        }
+                     },
+    "output_schema":  {
+                          "$schema":  "https://json-schema.org/draft/2020-12/schema",
+                          "type":  "object",
+                          "additionalProperties":  false,
+                          "required":  [
+                                           "message",
+                                           "data",
+                                           "no"
+                                       ],
+                          "properties":  {
+                                             "message":  {
+                                                             "type":  "string"
+                                                         },
+                                             "data":  {
+                                                          "type":  "object",
+                                                          "required":  [
+                                                                           "no"
+                                                                       ],
+                                                          "properties":  {
+                                                                             "no":  {
+                                                                                        "type":  "string",
+                                                                                        "minLength":  1
+                                                                                    }
+                                                                         }
+                                                      },
+                                             "no":  {
+                                                        "type":  "string",
+                                                        "minLength":  1
+                                                    }
+                                         }
+                      },
+    "permissions":  {
+                        "required_permissions":  [
+                                                     "ai_service_write"
+                                                 ],
+                        "match_mode":  "ALL"
+                    },
+    "confirmation":  {
+                         "required":  true,
+                         "risk_level":  "MEDIUM",
+                         "message_template":  "Create E-Ticket \u0027{title}\u0027 for {username} in menu {menu}, category {sub_category}, due {due_date}, with approver {approver} and operator {assign_to}."
+                     },
+    "approval":  {
+                     "required":  false,
+                     "policy_id":  null
+                 },
+    "execution":  {
+                      "connector":  "HTTP",
+                      "method":  "POST",
+                      "path":  "/ai/service/",
+                      "path_parameters":  {
+
+                                          },
+                      "query_parameters":  {
+
+                                           },
+                      "body_parameters":  {
+                                              "service":  {
+                                                              "source_type":  "CONSTANT",
+                                                              "source":  "Eticket",
+                                                              "required":  true,
+                                                              "target_type":  "STRING"
+                                                          },
+                                              "function":  {
+                                                               "source_type":  "CONSTANT",
+                                                               "source":  "ticket_create",
+                                                               "required":  true,
+                                                               "target_type":  "STRING"
+                                                           },
+                                              "payload.username":  {
+                                                                       "source_type":  "PARAMETER",
+                                                                       "source":  "username",
+                                                                       "required":  true,
+                                                                       "target_type":  "STRING"
+                                                                   },
+                                              "payload.menu":  {
+                                                                   "source_type":  "PARAMETER",
+                                                                   "source":  "menu",
+                                                                   "required":  true,
+                                                                   "target_type":  "INTEGER"
+                                                               },
+                                              "payload.title":  {
+                                                                    "source_type":  "PARAMETER",
+                                                                    "source":  "title",
+                                                                    "required":  true,
+                                                                    "target_type":  "STRING"
+                                                                },
+                                              "payload.contact_number":  {
+                                                                             "source_type":  "PARAMETER",
+                                                                             "source":  "contact_number",
+                                                                             "required":  false,
+                                                                             "target_type":  "STRING"
+                                                                         },
+                                              "payload.sub_category":  {
+                                                                           "source_type":  "PARAMETER",
+                                                                           "source":  "sub_category",
+                                                                           "required":  true,
+                                                                           "target_type":  "INTEGER"
+                                                                       },
+                                              "payload.description":  {
+                                                                          "source_type":  "PARAMETER",
+                                                                          "source":  "description",
+                                                                          "required":  false,
+                                                                          "target_type":  "STRING"
+                                                                      },
+                                              "payload.approver":  {
+                                                                       "source_type":  "PARAMETER",
+                                                                       "source":  "approver",
+                                                                       "required":  true,
+                                                                       "target_type":  "STRING"
+                                                                   },
+                                              "payload.due_date":  {
+                                                                       "source_type":  "PARAMETER",
+                                                                       "source":  "due_date",
+                                                                       "required":  true,
+                                                                       "target_type":  "STRING"
+                                                                   },
+                                              "payload.assign_to":  {
+                                                                        "source_type":  "PARAMETER",
+                                                                        "source":  "assign_to",
+                                                                        "required":  true,
+                                                                        "target_type":  "STRING"
+                                                                    }
+                                          },
+                      "response_mapping":  {
+                                               "message":  {
+                                                               "source_type":  "RESPONSE",
+                                                               "source":  "message",
+                                                               "required":  true,
+                                                               "target_type":  "STRING"
+                                                           },
+                                               "data":  {
+                                                            "source_type":  "RESPONSE",
+                                                            "source":  "data",
+                                                            "required":  true,
+                                                            "target_type":  "OBJECT"
+                                                        },
+                                               "no":  {
+                                                          "source_type":  "RESPONSE",
+                                                          "source":  "data.no",
+                                                          "required":  true,
+                                                          "target_type":  "STRING"
+                                                      }
+                                           },
+                      "timeout_seconds":  60,
+                      "idempotency_required":  true,
+                      "send_body_on_get":  false,
+                      "retry_policy":  {
+                                           "max_attempts":  1,
+                                           "backoff_seconds":  0,
+                                           "retry_on_timeout":  false,
+                                           "retry_on_transport_error":  false,
+                                           "retryable_http_statuses":  [
+
+                                                                       ]
+                                       }
+                  },
+    "verification":  {
+                         "accepted_http_statuses":  [
+                                                        200
+                                                    ],
+                         "required_response_fields":  [
+                                                          "message",
+                                                          "data",
+                                                          "no"
+                                                      ],
+                         "expected_field_values":  {
+                                                       "message":  "success"
+                                                   }
+                     },
+    "response_handling":  {
+                              "transaction_id_field":  "no",
+                              "status_field":  null,
+                              "success_message_template":  "E-Ticket created."
+                          },
+    "sensitive_fields":  [
+                             "username",
+                             "contact_number",
+                             "approver",
+                             "assign_to"
+                         ],
+    "business_rules":  [
+
+                       ],
+    "master_data_rules":  [
+
+                          ],
+    "created_at":  "2026-09-29T00:00:00Z",
+    "updated_at":  "2026-09-29T00:00:00Z"
+}

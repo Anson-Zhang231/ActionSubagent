@@ -1,0 +1,11 @@
+{
+  "identity_mode": "trusted_supervisor",
+  "role_ids": ["ai_service_reader"],
+  "parameter_bindings": [
+    {
+      "application_id": "ai_service",
+      "capability_ids": ["ticketlist", "ticket_context", "ticket_create", "ticket_detail", "ticket_status"],
+      "parameter": "username"
+    }
+  ]
+}

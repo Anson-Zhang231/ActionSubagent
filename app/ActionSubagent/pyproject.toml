@@ -1,0 +1,38 @@
+[project]
+name = "action-subagent"
+version = "0.1.0"
+description = "Action Agent core and AgentCore A2A entrypoint"
+requires-python = ">=3.12"
+dependencies = [
+    "a2a-sdk[fastapi]>=1.1,<2.0",
+    "fastapi>=0.115,<1.0",
+    "pydantic>=2.10,<3.0",
+    "uvicorn[standard]>=0.30,<1.0",
+    "langchain-aws",
+    "jsonschema[format]>=4.23,<5.0",
+    "tzdata",
+]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = [
+    "action_subagent",
+    "action_subagent.a2a",
+    "action_subagent.task",
+    "action_runtime",
+    "action_runtime.contracts",
+    "action_runtime.domain",
+    "action_runtime.orchestrator",
+    "action_runtime.services",
+]
+
+[tool.setuptools.package-dir]
+action_subagent = "src"
+action_runtime = "action_runtime"
+
+[tool.setuptools.package-data]
+action_subagent = ["schemas/*.json"]
+action_runtime = ["schemas/*.json"]

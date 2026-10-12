@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ai-action-agent-platform:schema:application:1.0.0",
+  "title": "Application Definition",
+  "description": "Defines one business application available to the AI Action Platform.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "description",
+    "owner",
+    "environment",
+    "status",
+    "version",
+    "connection",
+    "supported_actions",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connection": {
+      "$ref": "#/$defs/applicationConnection"
+    },
+    "supported_actions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "applicationConnection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_url",
+        "authentication"
+      ],
+      "properties": {
+        "base_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https?://[^?#]*[^/?#]$"
+        },
+        "user_id_map_reference": {
+          "type": "string",
+          "pattern": "^env:[A-Za-z_][A-Za-z0-9_]*$"
+        },
+        "authentication": {
+          "$ref": "#/$defs/authenticationDefinition"
+        }
+      }
+    },
+    "authenticationDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "scopes"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "API_KEY",
+            "BASIC",
+            "BEARER_TOKEN",
+            "OAUTH2_CLIENT_CREDENTIALS"
+          ]
+        },
+        "secret_reference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "scopes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "NONE"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "secret_reference": {
+                "type": "null"
+              },
+              "scopes": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "secret_reference"
+            ],
+            "properties": {
+              "secret_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

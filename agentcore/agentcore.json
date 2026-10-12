@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "ActionSubagent",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "Project": "ActionSubagent",
+    "Component": "ActionSubagent"
+  },
+  "runtimes": [
+    {
+      "name": "Runtime",
+      "build": "Container",
+      "entrypoint": "main.py",
+      "codeLocation": "app/ActionSubagent/",
+      "buildContextPath": "app/ActionSubagent/",
+      "dockerfile": "Dockerfile.agentcore",
+      "runtimeVersion": "PYTHON_3_13",
+      "networkMode": "PUBLIC",
+      "protocol": "A2A",
+      "authorizerType": "AWS_IAM",
+      "requestHeaderAllowlist": [
+        "X-Action-User-Id",
+        "A2A-Version"
+      ],
+      "envVars": [
+        {
+          "value": "trusted_supervisor",
+          "name": "A2A_IDENTITY_MODE"
+        },
+        {
+          "value": "ap-southeast-1",
+          "name": "BEDROCK_REGION"
+        },
+        {
+          "value": "global.anthropic.claude-opus-5",
+          "name": "BEDROCK_MODEL_ID"
+        },
+        {
+          "value": "{{resolve:secretsmanager:action-subagent/ai-service/basic-auth:SecretString}}",
+          "name": "AI_SERVICE_BASIC_AUTH"
+        },
+        {
+          "value": "api.svi.co.th,localhost,127.0.0.1",
+          "name": "NO_PROXY"
+        }
+      ]
+    }
+  ],
+  "memories": [
+  ],
+  "knowledgeBases": [
+  ],
+  "credentials": [
+  ],
+  "evaluators": [
+  ],
+  "onlineEvalConfigs": [
+  ],
+  "agentCoreGateways": [
+  ],
+  "policyEngines": [
+  ],
+  "configBundles": [
+  ],
+  "abTests": [
+  ],
+  "harnesses": [
+  ],
+  "datasets": [
+  ],
+  "capacityProviders": [
+  ],
+  "payments": [
+  ]
+}

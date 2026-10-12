@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-action-agent-platform.local/schemas/authorization-policy.schema.json",
+  "title": "Authorization Policies",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["policies"],
+  "properties": {
+    "policies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/policy"}
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+    "idList": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "resourceOwnership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parameter", "lookup_path", "owner_field"],
+      "properties": {
+        "parameter": {"$ref": "#/$defs/id"},
+        "lookup_path": {"type": "string", "pattern": "^/"},
+        "owner_field": {"$ref": "#/$defs/id"}
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["application_id", "capability_id", "allowed_organizations", "allowed_departments", "resource_ownership"],
+      "properties": {
+        "application_id": {"$ref": "#/$defs/id"},
+        "capability_id": {"$ref": "#/$defs/id"},
+        "allowed_organizations": {"$ref": "#/$defs/idList"},
+        "allowed_departments": {"$ref": "#/$defs/idList"},
+        "resource_ownership": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/resourceOwnership"}
+          ]
+        }
+      }
+    }
+  }
+}

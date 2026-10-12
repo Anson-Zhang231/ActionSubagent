@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ai-action-agent-platform:schema:output-parameters:1.0.0",
+  "title": "Capability Output Parameters Schema",
+  "description": "Uses the platform JSON Schema subset for versioned Capability outputs.",
+  "$ref": "urn:ai-action-agent-platform:schema:input-parameters:1.0.0"
+}

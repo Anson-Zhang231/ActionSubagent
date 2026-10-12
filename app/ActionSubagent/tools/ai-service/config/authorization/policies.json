@@ -1,0 +1,53 @@
+{
+  "policies": [
+    {
+      "application_id": "ai_service",
+      "capability_id": "plant",
+      "allowed_organizations": ["acme"],
+      "allowed_departments": [],
+      "resource_ownership": null
+    },
+    {
+      "application_id": "ai_service",
+      "capability_id": "menu",
+      "allowed_organizations": ["acme"],
+      "allowed_departments": [],
+      "resource_ownership": null
+    },
+    {
+      "application_id": "ai_service",
+      "capability_id": "ticketlist",
+      "allowed_organizations": ["acme"],
+      "allowed_departments": [],
+      "resource_ownership": null
+    },
+    {
+      "application_id": "ai_service",
+      "capability_id": "ticket_context",
+      "allowed_organizations": ["acme"],
+      "allowed_departments": [],
+      "resource_ownership": null
+    },
+    {
+      "application_id": "ai_service",
+      "capability_id": "ticket_detail",
+      "allowed_organizations": ["acme"],
+      "allowed_departments": [],
+      "resource_ownership": null
+    },
+    {
+      "application_id": "ai_service",
+      "capability_id": "ticket_create",
+      "allowed_organizations": ["acme"],
+      "allowed_departments": [],
+      "resource_ownership": null
+    },
+    {
+      "application_id": "ai_service",
+      "capability_id": "ticket_status",
+      "allowed_organizations": ["acme"],
+      "allowed_departments": [],
+      "resource_ownership": null
+    }
+  ]
+}

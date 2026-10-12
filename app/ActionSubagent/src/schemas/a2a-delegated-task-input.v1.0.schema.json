@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:action-subagent:a2a:delegated-task-input:1.0",
+  "$defs": {
+    "ConfirmationTaskInput": {
+      "additionalProperties": false,
+      "description": "Explicit decision bound to an existing confirmation and session version.",
+      "properties": {
+        "contract_version": {
+          "const": "1.0",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "user_context": {
+          "$ref": "#/$defs/DelegatedUserContext"
+        },
+        "operation": {
+          "const": "confirmation",
+          "title": "Operation",
+          "type": "string"
+        },
+        "parameters": {
+          "default": null,
+          "title": "Parameters",
+          "type": "null"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "confirmation_id": {
+          "pattern": "^(?:[0-9a-fA-F]{32}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|\\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\})(?![\\s\\S])",
+          "title": "Confirmation Id",
+          "type": "string"
+        },
+        "decision": {
+          "enum": [
+            "confirm",
+            "cancel"
+          ],
+          "title": "Decision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "contract_version",
+        "user_context",
+        "operation",
+        "expected_version",
+        "confirmation_id",
+        "decision"
+      ],
+      "title": "ConfirmationTaskInput",
+      "type": "object"
+    },
+    "DelegatedUserContext": {
+      "additionalProperties": false,
+      "description": "Business identity asserted by the trusted supervisor, never model-generated grants.",
+      "properties": {
+        "user_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "organization_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "department_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "application_user_ids": {
+          "additionalProperties": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[^\\u0000-\\u0020\\u007f\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000](?:[^\\u0000-\\u001f\\u007f]*[^\\u0000-\\u0020\\u007f\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000])?(?![\\s\\S])",
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "propertyNames": {
+            "$ref": "#/$defs/Identifier"
+          },
+          "title": "Application User Ids",
+          "type": "object"
+        }
+      },
+      "required": [
+        "user_id",
+        "organization_id",
+        "department_id",
+        "application_user_ids"
+      ],
+      "title": "DelegatedUserContext",
+      "type": "object"
+    },
+    "Identifier": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_-]*(?![\\s\\S])",
+      "type": "string"
+    },
+    "ParameterTaskInput": {
+      "additionalProperties": false,
+      "description": "Provide nonempty parameters for a specific existing session version.",
+      "properties": {
+        "contract_version": {
+          "const": "1.0",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "user_context": {
+          "$ref": "#/$defs/DelegatedUserContext"
+        },
+        "operation": {
+          "const": "provide_parameters",
+          "title": "Operation",
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "minProperties": 1,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "confirmation_id": {
+          "default": null,
+          "title": "Confirmation Id",
+          "type": "null"
+        },
+        "decision": {
+          "default": null,
+          "title": "Decision",
+          "type": "null"
+        }
+      },
+      "required": [
+        "contract_version",
+        "user_context",
+        "operation",
+        "parameters",
+        "expected_version"
+      ],
+      "title": "ParameterTaskInput",
+      "type": "object"
+    },
+    "TextTaskInput": {
+      "additionalProperties": false,
+      "description": "Initial request or text continuation; no structured operation fields.",
+      "properties": {
+        "contract_version": {
+          "const": "1.0",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "user_context": {
+          "$ref": "#/$defs/DelegatedUserContext"
+        },
+        "operation": {
+          "default": null,
+          "title": "Operation",
+          "type": "null"
+        },
+        "parameters": {
+          "default": null,
+          "title": "Parameters",
+          "type": "null"
+        },
+        "expected_version": {
+          "default": null,
+          "title": "Expected Version",
+          "type": "null"
+        },
+        "confirmation_id": {
+          "default": null,
+          "title": "Confirmation Id",
+          "type": "null"
+        },
+        "decision": {
+          "default": null,
+          "title": "Decision",
+          "type": "null"
+        }
+      },
+      "required": [
+        "contract_version",
+        "user_context"
+      ],
+      "title": "TextTaskInput",
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/TextTaskInput"
+    },
+    {
+      "$ref": "#/$defs/ParameterTaskInput"
+    },
+    {
+      "$ref": "#/$defs/ConfirmationTaskInput"
+    }
+  ],
+  "description": "Single public wire contract; model_dump emits the original flat JSON shape.",
+  "title": "DelegatedTaskInput"
+}

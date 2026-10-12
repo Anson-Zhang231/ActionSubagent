@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ai-action-agent-platform:schema:input-parameters:1.0.0",
+  "title": "Capability Input Parameters Schema",
+  "description": "Defines the supported JSON Schema subset for Capability input parameters.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "type", "additionalProperties", "properties"],
+  "properties": {
+    "$schema": {"const": "https://json-schema.org/draft/2020-12/schema"},
+    "$id": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "description": {"type": "string", "minLength": 1},
+    "type": {"const": "object"},
+    "additionalProperties": {"const": false},
+    "required": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+    },
+    "properties": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_]*$"},
+      "additionalProperties": {"$ref": "#/$defs/parameterSchema"}
+    },
+    "allOf": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/conditionalRequiredSchema"}
+    }
+  },
+  "$defs": {
+    "conditionalRequiredSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["if", "then"],
+      "properties": {
+        "if": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["properties", "required"],
+          "properties": {
+            "properties": {
+              "type": "object",
+              "minProperties": 1,
+              "maxProperties": 1,
+              "propertyNames": {"pattern": "^[a-z][a-z0-9_]*$"},
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["enum"],
+                "properties": {
+                  "enum": {"type": "array", "minItems": 1, "uniqueItems": true}
+                }
+              }
+            },
+            "required": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "uniqueItems": true,
+              "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+            }
+          }
+        },
+        "then": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["required"],
+          "properties": {
+            "required": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+            }
+          }
+        }
+      }
+    },
+    "parameterSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["string", "integer", "number", "boolean", "array", "object"]},
+        "title": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "default": true,
+        "enum": {"type": "array", "minItems": 1, "uniqueItems": true},
+        "format": {"type": "string", "minLength": 1},
+        "minLength": {"type": "integer", "minimum": 0},
+        "maxLength": {"type": "integer", "minimum": 0},
+        "pattern": {"type": "string"},
+        "minimum": {"type": "number"},
+        "maximum": {"type": "number"},
+        "minItems": {"type": "integer", "minimum": 0},
+        "maxItems": {"type": "integer", "minimum": 0},
+        "uniqueItems": {"type": "boolean"},
+        "items": {"$ref": "#/$defs/parameterSchema"},
+        "required": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+        },
+        "properties": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_]*$"},
+          "additionalProperties": {"$ref": "#/$defs/parameterSchema"}
+        },
+        "additionalProperties": {"type": "boolean"}
+      }
+    }
+  }
+}

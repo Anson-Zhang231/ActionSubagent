@@ -1,0 +1,28 @@
+ARG PYTHON_BASE_IMAGE=public.ecr.aws/docker/library/python:3.13-slim
+FROM ${PYTHON_BASE_IMAGE}
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    HOST=0.0.0.0 \
+    PORT=9000 \
+    A2A_RPC_PATH=/ \
+    ACTION_CONFIG_DIRECTORY=/app/tools/ai-service/config \
+    A2A_IDENTITY_MODE=trusted_supervisor
+
+WORKDIR /app
+
+COPY pyproject.toml README.md ./
+COPY main.py ./main.py
+COPY src/ ./src/
+COPY action_runtime/ ./action_runtime/
+COPY tools/ai-service/config/ ./tools/ai-service/config/
+
+RUN pip install . \
+    && addgroup --system app \
+    && adduser --system --ingroup app app \
+    && chown -R app:app /app
+
+USER app
+EXPOSE 9000
+CMD ["python", "main.py"]

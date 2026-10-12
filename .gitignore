@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.pytest-*/
+pytest-cache-files-*/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+
+# JavaScript
+node_modules/
+.pnpm-store/
+dist/
+build/
+.next/
+coverage/
+
+# IDE and operating system
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+!agentcore/.env.local.example
+*.pem
+*.key
+
+# Runtime data
+logs/
+tmp/
+.tmp/
+*.log
+extras/local-demo/infra/data/*.sqlite3
+docs/reports/*.xml
+.codex-doc-review/
+.doc-review-*/
+agentcore/.cli/
+agentcore/cdk/cdk.out/
+
+# Additional local test artifacts
+.pytest_*/
+
+# Keep helper source; exclude local outputs
+/.superpowers/*
+!/.superpowers/*.py
+!/.superpowers/*.ps1
+
+# Local credentials and tool settings
+/.aws/
+/.codex/

@@ -1,0 +1,29 @@
+{
+  "id": "ai_service",
+  "name": "AI Service E-Ticket",
+  "description": "E-Ticket functions exposed through the AI Service gateway.",
+  "owner": "E-Ticket",
+  "environment": "production",
+  "status": "ACTIVE",
+  "version": "1.0.0",
+  "connection": {
+    "base_url": "https://api.svi.co.th",
+    "authentication": {
+      "method": "BASIC",
+      "secret_reference": "env:AI_SERVICE_BASIC_AUTH",
+      "scopes": [
+      ]
+    }
+  },
+  "supported_actions": [
+    "plant",
+    "menu",
+    "ticketlist",
+    "ticket_context",
+    "ticket_detail",
+    "ticket_create",
+    "ticket_status"
+  ],
+  "created_at": "2026-09-24T00:00:00Z",
+  "updated_at": "2026-09-24T00:00:00Z"
+}

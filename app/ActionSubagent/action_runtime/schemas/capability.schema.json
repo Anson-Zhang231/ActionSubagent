@@ -1,0 +1,607 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ai-action-agent-platform:schema:capability:1.0.0",
+  "title": "Capability Definition",
+  "description": "Defines one versioned Action exposed by an Application.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "application_id",
+    "version",
+    "api_version",
+    "input_schema_version",
+    "output_schema_version",
+    "name",
+    "description",
+    "status",
+    "discovery_intents",
+    "input_schema",
+    "output_schema",
+    "business_rules",
+    "master_data_rules",
+    "permissions",
+    "confirmation",
+    "approval",
+    "execution",
+    "verification",
+    "response_handling",
+    "sensitive_fields",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "application_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "api_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "input_schema_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "output_schema_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "discovery_intents": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "business_rules": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/businessRuleDefinition"
+      }
+    },
+    "master_data_rules": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/masterDataRuleDefinition"
+      }
+    },
+    "input_schema": {
+      "$ref": "urn:ai-action-agent-platform:schema:input-parameters:1.0.0"
+    },
+    "output_schema": {
+      "$ref": "urn:ai-action-agent-platform:schema:output-parameters:1.0.0"
+    },
+    "permissions": {
+      "$ref": "#/$defs/permissionDefinition"
+    },
+    "confirmation": {
+      "$ref": "#/$defs/confirmationDefinition"
+    },
+    "approval": {
+      "$ref": "#/$defs/approvalDefinition"
+    },
+    "execution": {
+      "$ref": "#/$defs/httpExecutionDefinition"
+    },
+    "verification": {
+      "$ref": "#/$defs/verificationDefinition"
+    },
+    "response_handling": {
+      "$ref": "#/$defs/responseHandlingDefinition"
+    },
+    "sensitive_fields": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "permissionDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_permissions",
+        "match_mode"
+      ],
+      "properties": {
+        "required_permissions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        },
+        "match_mode": {
+          "type": "string",
+          "enum": [
+            "ALL",
+            "ANY"
+          ]
+        }
+      }
+    },
+    "confirmationDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "risk_level",
+        "message_template"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "risk_level": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH",
+            null
+          ]
+        },
+        "message_template": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "required": {
+                "const": true
+              }
+            },
+            "required": [
+              "required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "risk_level": {
+                "type": "string",
+                "enum": [
+                  "LOW",
+                  "MEDIUM",
+                  "HIGH"
+                ]
+              },
+              "message_template": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "risk_level": {
+                "type": "null"
+              },
+              "message_template": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "approvalDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "policy_id"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "policy_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "required": {
+                "const": true
+              }
+            },
+            "required": [
+              "required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "policy_id": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "required": {
+                "const": false
+              }
+            },
+            "required": [
+              "required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "policy_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "httpExecutionDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "connector",
+        "method",
+        "path",
+        "path_parameters",
+        "query_parameters",
+        "body_parameters",
+        "response_mapping",
+        "timeout_seconds",
+        "idempotency_required",
+        "retry_policy"
+      ],
+      "properties": {
+        "connector": {
+          "const": "HTTP"
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/[^?#]*$"
+        },
+        "path_parameters": {
+          "$ref": "#/$defs/parameterMapping"
+        },
+        "query_parameters": {
+          "$ref": "#/$defs/parameterMapping"
+        },
+        "body_parameters": {
+          "$ref": "#/$defs/parameterMapping"
+        },
+        "response_mapping": {
+          "$ref": "#/$defs/parameterMapping"
+        },
+        "timeout_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "idempotency_required": {
+          "type": "boolean"
+        },
+        "send_body_on_get": {
+          "type": "boolean"
+        },
+        "retry_policy": {
+          "$ref": "#/$defs/retryPolicyDefinition"
+        }
+      }
+    },
+    "retryPolicyDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_attempts",
+        "backoff_seconds",
+        "retry_on_timeout",
+        "retry_on_transport_error",
+        "retryable_http_statuses"
+      ],
+      "properties": {
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "backoff_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 30
+        },
+        "retry_on_timeout": {
+          "type": "boolean"
+        },
+        "retry_on_transport_error": {
+          "type": "boolean"
+        },
+        "retryable_http_statuses": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599
+          }
+        }
+      }
+    },
+    "businessRuleDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "left_field",
+        "operator",
+        "right_field",
+        "target_field",
+        "message"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "type": {
+          "const": "FIELD_COMPARISON"
+        },
+        "left_field": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "LESS_THAN",
+            "LESS_THAN_OR_EQUAL",
+            "GREATER_THAN",
+            "GREATER_THAN_OR_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL"
+          ]
+        },
+        "right_field": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "target_field": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "masterDataRuleDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "field",
+        "source_id",
+        "require_active",
+        "message"
+      ],
+      "properties": {
+        "field": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "source_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "require_active": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "parameterMapping": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/fieldMappingDefinition"
+      }
+    },
+    "fieldMappingDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_type",
+        "source",
+        "required",
+        "target_type"
+      ],
+      "properties": {
+        "source_type": {
+          "type": "string",
+          "enum": ["PARAMETER", "RESPONSE", "CONSTANT", "APPLICATION_USER_ID"]
+        },
+        "source": {},
+        "required": {
+          "type": "boolean"
+        },
+        "target_type": {
+          "type": ["string", "null"],
+          "enum": ["STRING", "INTEGER", "NUMBER", "BOOLEAN", "OBJECT", "ARRAY", null]
+        },
+        "default": {}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "source_type": {"enum": ["PARAMETER", "RESPONSE"]}
+            }
+          },
+          "then": {
+            "properties": {
+              "source": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source_type": {"const": "CONSTANT"}
+            }
+          },
+          "then": {
+            "not": {"required": ["default"]}
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source_type": {"const": "APPLICATION_USER_ID"}
+            }
+          },
+          "then": {
+            "properties": {
+              "source": {"const": "user_id"}
+            }
+          }
+        }
+      ]
+    },
+    "responseHandlingDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transaction_id_field",
+        "status_field",
+        "success_message_template"
+      ],
+      "properties": {
+        "transaction_id_field": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "status_field": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "success_message_template": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "verificationDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accepted_http_statuses",
+        "required_response_fields",
+        "expected_field_values"
+      ],
+      "properties": {
+        "accepted_http_statuses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 599
+          }
+        },
+        "required_response_fields": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "expected_field_values": {
+          "type": "object"
+        },
+        "status_check_capability_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
+      }
+    }
+  }
+}

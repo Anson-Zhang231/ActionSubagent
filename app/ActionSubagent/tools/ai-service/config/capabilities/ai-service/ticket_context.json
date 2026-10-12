@@ -1,0 +1,155 @@
+{
+  "id": "ticket_context",
+  "application_id": "ai_service",
+  "version": "1.0.0",
+  "api_version": "1.0.0",
+  "input_schema_version": "1.0.0",
+  "output_schema_version": "1.0.0",
+  "name": "Get E-Ticket creation context",
+  "description": "Retrieve ticket categories, approvers, and operators for an employee and menu.",
+  "status": "ACTIVE",
+  "discovery_intents": [
+    "show ticket categories and approvers for a menu",
+    "get E-Ticket creation context for an employee",
+    "find available ticket subcategories and operators"
+  ],
+  "input_schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "username",
+      "menu_id"
+    ],
+    "properties": {
+      "username": {
+        "type": "string",
+        "minLength": 1,
+        "description": "E-Ticket employee username supplied explicitly by the caller."
+      },
+      "menu_id": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "Menu ID returned by the E-Ticket menu function."
+      }
+    }
+  },
+  "output_schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "message",
+      "data"
+    ],
+    "properties": {
+      "message": {
+        "type": "string"
+      },
+      "data": {
+        "type": "object"
+      }
+    }
+  },
+  "permissions": {
+    "required_permissions": [
+      "ai_service_read"
+    ],
+    "match_mode": "ALL"
+  },
+  "confirmation": {
+    "required": false,
+    "risk_level": null,
+    "message_template": null
+  },
+  "approval": {
+    "required": false,
+    "policy_id": null
+  },
+  "execution": {
+    "connector": "HTTP",
+    "method": "GET",
+    "path": "/ai/service/",
+    "path_parameters": {
+    },
+    "query_parameters": {
+    },
+    "body_parameters": {
+      "service": {
+        "source_type": "CONSTANT",
+        "source": "Eticket",
+        "required": true,
+        "target_type": "STRING"
+      },
+      "function": {
+        "source_type": "CONSTANT",
+        "source": "ticket_context",
+        "required": true,
+        "target_type": "STRING"
+      },
+      "payload.username": {
+        "source_type": "PARAMETER",
+        "source": "username",
+        "required": true,
+        "target_type": "STRING"
+      },
+      "payload.menu_id": {
+        "source_type": "PARAMETER",
+        "source": "menu_id",
+        "required": true,
+        "target_type": "INTEGER"
+      }
+    },
+    "response_mapping": {
+      "message": {
+        "source_type": "RESPONSE",
+        "source": "message",
+        "required": true,
+        "target_type": "STRING"
+      },
+      "data": {
+        "source_type": "RESPONSE",
+        "source": "data",
+        "required": true,
+        "target_type": "OBJECT"
+      }
+    },
+    "timeout_seconds": 60,
+    "idempotency_required": false,
+    "send_body_on_get": true,
+    "retry_policy": {
+      "max_attempts": 1,
+      "backoff_seconds": 0,
+      "retry_on_timeout": false,
+      "retry_on_transport_error": false,
+      "retryable_http_statuses": [
+      ]
+    }
+  },
+  "verification": {
+    "accepted_http_statuses": [
+      200
+    ],
+    "required_response_fields": [
+      "message",
+      "data"
+    ],
+    "expected_field_values": {
+      "message": "success"
+    }
+  },
+  "response_handling": {
+    "transaction_id_field": null,
+    "status_field": null,
+    "success_message_template": "E-Ticket creation context retrieved."
+  },
+  "sensitive_fields": [
+    "username"
+  ],
+  "business_rules": [
+  ],
+  "master_data_rules": [
+  ],
+  "created_at": "2026-09-29T00:00:00Z",
+  "updated_at": "2026-09-29T00:00:00Z"
+}

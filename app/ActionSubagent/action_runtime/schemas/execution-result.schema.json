@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ai-action-agent-platform:schema:execution-result:1.0.0",
+  "title": "Standard Execution Result",
+  "description": "Defines the normalized connector execution result without making a business-success decision.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["execution_id", "status", "request_sent", "external_request_id", "http_status", "data", "error", "started_at", "finished_at"],
+  "properties": {
+    "execution_id": {"type": "string", "format": "uuid"},
+    "status": {"type": "string", "enum": ["RETURNED", "FAILED", "TIMED_OUT", "UNKNOWN"]},
+    "request_sent": {"type": "boolean"},
+    "external_request_id": {"type": ["string", "null"], "minLength": 1},
+    "http_status": {"type": ["integer", "null"], "minimum": 100, "maximum": 599},
+    "data": {"type": "object"},
+    "error": {
+      "oneOf": [
+        {"$ref": "urn:ai-action-agent-platform:schema:error:1.0.0"},
+        {"type": "null"}
+      ]
+    },
+    "started_at": {"type": "string", "format": "date-time"},
+    "finished_at": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "RETURNED"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "request_sent": {"const": true},
+          "http_status": {"type": "integer", "minimum": 100, "maximum": 599},
+          "error": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "FAILED"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "http_status": {"type": "null"},
+          "data": {"maxProperties": 0},
+          "error": {"$ref": "urn:ai-action-agent-platform:schema:error:1.0.0"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"enum": ["TIMED_OUT", "UNKNOWN"]}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "http_status": {"type": "null"},
+          "data": {"maxProperties": 0}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "UNKNOWN"}}, "required": ["status"]},
+      "then": {"properties": {"request_sent": {"const": true}}}
+    }
+  ]
+}

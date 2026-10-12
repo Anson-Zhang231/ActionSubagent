@@ -1,0 +1,142 @@
+{
+  "id": "menu",
+  "application_id": "ai_service",
+  "version": "1.0.0",
+  "api_version": "1.0.0",
+  "input_schema_version": "1.0.0",
+  "output_schema_version": "1.0.0",
+  "name": "List active E-Ticket menus",
+  "description": "Retrieve the active E-Ticket menus for a supplied plant name.",
+  "status": "ACTIVE",
+  "discovery_intents": [
+    "list E-Ticket menus for a plant",
+    "show available service desks for a plant",
+    "find the menu IDs for an E-Ticket plant"
+  ],
+  "input_schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "plant"
+    ],
+    "properties": {
+      "plant": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Plant name returned by the E-Ticket plant function."
+      }
+    }
+  },
+  "output_schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "message",
+      "menus"
+    ],
+    "properties": {
+      "message": {
+        "type": "string"
+      },
+      "menus": {
+        "type": "object"
+      }
+    }
+  },
+  "permissions": {
+    "required_permissions": [
+      "ai_service_read"
+    ],
+    "match_mode": "ALL"
+  },
+  "confirmation": {
+    "required": false,
+    "risk_level": null,
+    "message_template": null
+  },
+  "approval": {
+    "required": false,
+    "policy_id": null
+  },
+  "execution": {
+    "connector": "HTTP",
+    "method": "GET",
+    "path": "/ai/service/",
+    "path_parameters": {
+    },
+    "query_parameters": {
+    },
+    "body_parameters": {
+      "service": {
+        "source_type": "CONSTANT",
+        "source": "Eticket",
+        "required": true,
+        "target_type": "STRING"
+      },
+      "function": {
+        "source_type": "CONSTANT",
+        "source": "menu",
+        "required": true,
+        "target_type": "STRING"
+      },
+      "payload.plant": {
+        "source_type": "PARAMETER",
+        "source": "plant",
+        "required": true,
+        "target_type": "STRING"
+      }
+    },
+    "response_mapping": {
+      "message": {
+        "source_type": "RESPONSE",
+        "source": "message",
+        "required": true,
+        "target_type": "STRING"
+      },
+      "menus": {
+        "source_type": "RESPONSE",
+        "source": "data",
+        "required": true,
+        "target_type": "OBJECT"
+      }
+    },
+    "timeout_seconds": 60,
+    "idempotency_required": false,
+    "send_body_on_get": true,
+    "retry_policy": {
+      "max_attempts": 1,
+      "backoff_seconds": 0,
+      "retry_on_timeout": false,
+      "retry_on_transport_error": false,
+      "retryable_http_statuses": [
+      ]
+    }
+  },
+  "verification": {
+    "accepted_http_statuses": [
+      200
+    ],
+    "required_response_fields": [
+      "message",
+      "menus"
+    ],
+    "expected_field_values": {
+      "message": "success"
+    }
+  },
+  "response_handling": {
+    "transaction_id_field": null,
+    "status_field": null,
+    "success_message_template": "Active E-Ticket menus retrieved."
+  },
+  "sensitive_fields": [
+  ],
+  "business_rules": [
+  ],
+  "master_data_rules": [
+  ],
+  "created_at": "2026-09-29T00:00:00Z",
+  "updated_at": "2026-09-29T00:00:00Z"
+}

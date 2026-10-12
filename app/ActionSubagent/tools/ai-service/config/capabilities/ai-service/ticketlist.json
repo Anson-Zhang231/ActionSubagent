@@ -1,0 +1,199 @@
+{
+    "id":  "ticketlist",
+    "application_id":  "ai_service",
+    "version":  "1.0.0",
+    "api_version":  "1.0.0",
+    "input_schema_version":  "1.0.0",
+    "output_schema_version":  "1.0.0",
+    "name":  "List E-Ticket tickets for a menu and employee",
+    "description":  "Retrieve E-Ticket tickets for an explicitly supplied employee username and menu ID.",
+    "status":  "ACTIVE",
+    "discovery_intents":  [
+                              "list E-Ticket tickets for an employee and menu",
+                              "show E-Ticket tickets for a given menu and employee",
+                              "find tickets by employee username and menu ID"
+                          ],
+    "input_schema":  {
+                         "$schema":  "https://json-schema.org/draft/2020-12/schema",
+                         "type":  "object",
+                         "additionalProperties":  false,
+                         "required":  [
+                                          "username",
+                                          "menu"
+                                      ],
+                         "properties":  {
+                                            "username":  {
+                                                             "type":  "string",
+                                                             "minLength":  1,
+                                                             "description":  "E-Ticket employee username supplied explicitly by the caller."
+                                                         },
+                                            "menu":  {
+                                                         "type":  "integer",
+                                                         "description":  "Menu ID returned by the E-Ticket menu function."
+                                                     }
+                                        }
+                     },
+    "output_schema":  {
+                          "$schema":  "https://json-schema.org/draft/2020-12/schema",
+                          "type":  "object",
+                          "additionalProperties":  false,
+                          "required":  [
+                                           "message",
+                                           "tickets"
+                                       ],
+                          "properties":  {
+                                             "message":  {
+                                                             "type":  "string"
+                                                         },
+                                             "tickets":  {
+                                                             "type":  "object",
+                                                             "required":  [
+                                                                              "on_process",
+                                                                              "wait_approve",
+                                                                              "related",
+                                                                              "completed",
+                                                                              "all_process"
+                                                                          ],
+                                                             "properties":  {
+                                                                                "on_process":  {
+                                                                                                   "type":  "array",
+                                                                                                   "items":  {
+                                                                                                                 "type":  "object"
+                                                                                                             }
+                                                                                               },
+                                                                                "wait_approve":  {
+                                                                                                     "type":  "array",
+                                                                                                     "items":  {
+                                                                                                                   "type":  "object"
+                                                                                                               }
+                                                                                                 },
+                                                                                "related":  {
+                                                                                                "type":  "array",
+                                                                                                "items":  {
+                                                                                                              "type":  "object"
+                                                                                                          }
+                                                                                            },
+                                                                                "completed":  {
+                                                                                                  "type":  "array",
+                                                                                                  "items":  {
+                                                                                                                "type":  "object"
+                                                                                                            }
+                                                                                              },
+                                                                                "all_process":  {
+                                                                                                    "type":  "array",
+                                                                                                    "items":  {
+                                                                                                                  "type":  "object"
+                                                                                                              }
+                                                                                                }
+                                                                            },
+                                                             "additionalProperties":  true
+                                                         }
+                                         }
+                      },
+    "permissions":  {
+                        "required_permissions":  [
+                                                     "ai_service_read"
+                                                 ],
+                        "match_mode":  "ALL"
+                    },
+    "confirmation":  {
+                         "required":  false,
+                         "risk_level":  null,
+                         "message_template":  null
+                     },
+    "approval":  {
+                     "required":  false,
+                     "policy_id":  null
+                 },
+    "execution":  {
+                      "connector":  "HTTP",
+                      "method":  "GET",
+                      "path":  "/ai/service/",
+                      "path_parameters":  {
+
+                                          },
+                      "query_parameters":  {
+
+                                           },
+                      "body_parameters":  {
+                                              "service":  {
+                                                              "source_type":  "CONSTANT",
+                                                              "source":  "Eticket",
+                                                              "required":  true,
+                                                              "target_type":  "STRING"
+                                                          },
+                                              "function":  {
+                                                               "source_type":  "CONSTANT",
+                                                               "source":  "ticketlist",
+                                                               "required":  true,
+                                                               "target_type":  "STRING"
+                                                           },
+                                              "payload.username":  {
+                                                                       "source_type":  "PARAMETER",
+                                                                       "source":  "username",
+                                                                       "required":  true,
+                                                                       "target_type":  "STRING"
+                                                                   },
+                                              "payload.menu":  {
+                                                                   "source_type":  "PARAMETER",
+                                                                   "source":  "menu",
+                                                                   "required":  true,
+                                                                   "target_type":  "INTEGER"
+                                                               }
+                                          },
+                      "response_mapping":  {
+                                               "message":  {
+                                                               "source_type":  "RESPONSE",
+                                                               "source":  "message",
+                                                               "required":  true,
+                                                               "target_type":  "STRING"
+                                                           },
+                                               "tickets":  {
+                                                               "source_type":  "RESPONSE",
+                                                               "source":  "data",
+                                                               "required":  true,
+                                                               "target_type":  "OBJECT"
+                                                           }
+                                           },
+                      "timeout_seconds":  60,
+                      "idempotency_required":  false,
+                      "send_body_on_get":  true,
+                      "retry_policy":  {
+                                           "max_attempts":  1,
+                                           "backoff_seconds":  0,
+                                           "retry_on_timeout":  false,
+                                           "retry_on_transport_error":  false,
+                                           "retryable_http_statuses":  [
+
+                                                                       ]
+                                       }
+                  },
+    "verification":  {
+                         "accepted_http_statuses":  [
+                                                        200
+                                                    ],
+                         "required_response_fields":  [
+                                                          "message",
+                                                          "tickets"
+                                                      ],
+                         "expected_field_values":  {
+                                                       "message":  "success"
+                                                   }
+                     },
+    "response_handling":  {
+                              "transaction_id_field":  null,
+                              "status_field":  null,
+                              "success_message_template":  "E-Ticket tickets retrieved."
+                          },
+    "sensitive_fields":  [
+                             "username"
+                         ],
+    "business_rules":  [
+
+                       ],
+    "master_data_rules":  [
+
+                          ],
+    "created_at":  "2026-09-28T00:00:00Z",
+    "updated_at":  "2026-09-28T00:00:00Z"
+}
